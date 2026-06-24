@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: xhs-copy-generator
+    runtime: node
+    rootDir: backend-vercel
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DEEPSEEK_API_KEY
+        sync: false
