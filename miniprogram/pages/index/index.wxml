@@ -1,0 +1,32 @@
+<view class="container">
+  <view class="header">
+    <text class="title">小红书爆款文案</text>
+    <text class="subtitle">输入产品，一键生成种草文案</text>
+  </view>
+
+  <view class="input-box">
+    <input class="input" placeholder="输入产品/主题，比如「洗面奶」" value="{{prompt}}" bindinput="onInput" confirm-type="done" />
+    <button class="btn" bindtap="onGenerate" disabled="{{loading}}">
+      {{loading ? '生成中...' : '生成文案'}}
+    </button>
+  </view>
+
+  <view class="result-section" wx:if="{{result}}">
+    <view class="section-title">生成标题</view>
+    <view class="title-list">
+      <view class="title-item" wx:for="{{result.titles}}" wx:key="index">{{index + 1}}. {{item}}</view>
+    </view>
+
+    <view class="section-title">生成文案</view>
+    <view class="content-list">
+      <view class="content-item" wx:for="{{result.contents}}" wx:key="index">
+        <text class="content-text">{{item}}</text>
+        <button class="copy-btn" data-text="{{item}}" bindtap="onCopy">复制</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="error-box" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+</view>

@@ -1,0 +1,8 @@
+{
+  "pages": ["pages/index/index"],
+  "window": {
+    "navigationBarTitleText": "小红书文案生成",
+    "navigationBarBackgroundColor": "#ff2442",
+    "navigationBarTextStyle": "white"
+  }
+}
