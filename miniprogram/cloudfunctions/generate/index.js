@@ -26,7 +26,7 @@ const https = require('https');
 const DEEPSEEK_API_HOST = 'api.deepseek.com';
 const DEEPSEEK_API_PATH = '/v1/chat/completions';
 
-const FALLBACK_API_KEY = 'sk-dd9b50c021cc48c292bff7ea08ef8838';
+const FALLBACK_API_KEY = ''; // 请在云函数环境变量中配置 DEEPSEEK_API_KEY
 
 function httpsRequest(options, body) {
   return new Promise((resolve, reject) => {
