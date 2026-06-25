@@ -1,32 +1,122 @@
-<view class="container">
-  <view class="header">
-    <text class="title">小红书爆款文案</text>
-    <text class="subtitle">输入产品，一键生成种草文案</text>
+<view class="page">
+  <!-- 顶部品牌区 -->
+  <view class="hero">
+    <view class="hero-badge">AI · 小红书</view>
+    <text class="hero-title">智能文案生成器</text>
+    <text class="hero-desc">输入产品，一键生成爆款种草文案</text>
   </view>
 
-  <view class="input-box">
-    <input class="input" placeholder="输入产品/主题，比如「洗面奶」" value="{{prompt}}" bindinput="onInput" confirm-type="done" />
-    <button class="btn" bindtap="onGenerate" disabled="{{loading}}">
-      {{loading ? '生成中...' : '生成文案'}}
-    </button>
-  </view>
-
-  <view class="result-section" wx:if="{{result}}">
-    <view class="section-title">生成标题</view>
-    <view class="title-list">
-      <view class="title-item" wx:for="{{result.titles}}" wx:key="index">{{index + 1}}. {{item}}</view>
+  <!-- 输入区 -->
+  <view class="input-card">
+    <view class="input-row">
+      <input 
+        class="main-input" 
+        placeholder="输入产品名称，如「口红」" 
+        value="{{prompt}}" 
+        bindinput="onInput" 
+        confirm-type="done"
+        focus="{{inputFocus}}"
+      />
+      <view class="send-btn {{prompt ? 'active' : ''}}" bindtap="onGenerate">
+        <text class="send-icon">{{loading ? '⏳' : '↑'}}</text>
+      </view>
     </view>
 
-    <view class="section-title">生成文案</view>
-    <view class="content-list">
-      <view class="content-item" wx:for="{{result.contents}}" wx:key="index">
-        <text class="content-text">{{item}}</text>
-        <button class="copy-btn" data-text="{{item}}" bindtap="onCopy">复制</button>
+    <!-- 热门标签 -->
+    <view class="tags-row">
+      <text class="tags-label">热门</text>
+      <scroll-view class="tags-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="tag {{activeTag === item ? 'active' : ''}}" 
+              wx:for="{{hotTags}}" wx:key="*this" 
+              bindtap="onTagTap" data-tag="{{item}}">
+          {{item}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 风格选择 -->
+    <view class="style-row">
+      <text class="style-label">文风</text>
+      <view class="style-options">
+        <view class="style-chip {{activeStyle === item.value ? 'active' : ''}}" 
+              wx:for="{{styles}}" wx:key="value" 
+              bindtap="onStyleTap" data-style="{{item.value}}">
+          {{item.label}}
+        </view>
       </view>
     </view>
   </view>
 
-  <view class="error-box" wx:if="{{error}}">
-    <text class="error-text">{{error}}</text>
+  <!-- 加载骨架屏 -->
+  <view class="skeleton-card" wx:if="{{loading}}">
+    <view class="sk-line sk-title"></view>
+    <view class="sk-line sk-t1"></view>
+    <view class="sk-line sk-t2"></view>
+    <view class="sk-line sk-t3"></view>
+    <view class="sk-line sk-body"></view>
+    <view class="sk-line sk-body-short"></view>
   </view>
+
+  <!-- 结果区 -->
+  <view class="result-card" wx:if="{{result && !loading}}">
+    <view class="result-header">
+      <text class="result-icon">✦</text>
+      <text class="result-label">生成结果</text>
+      <view class="result-actions">
+        <view class="action-btn" bindtap="onCopyAll">全部复制</view>
+        <view class="action-btn" bindtap="onRegenerate">重新生成</view>
+      </view>
+    </view>
+
+    <!-- 标题 -->
+    <view class="titles-block">
+      <text class="block-label">推荐标题</text>
+      <view class="title-card" wx:for="{{result.titles}}" wx:key="index" bindtap="onCopy" data-text="{{item}}">
+        <text class="title-num">{{index + 1}}</text>
+        <text class="title-text">{{item}}</text>
+        <text class="title-copy">复制</text>
+      </view>
+    </view>
+
+    <!-- 文案预览卡片（模拟小红书） -->
+    <view class="block-label">种草文案</view>
+    <view class="xhs-card" wx:for="{{result.contents}}" wx:key="index">
+      <view class="xhs-card-header">
+        <view class="xhs-avatar"></view>
+        <view>
+          <text class="xhs-name">种草小助手</text>
+          <text class="xhs-time">刚刚</text>
+        </view>
+      </view>
+      <text class="xhs-content">{{item}}</text>
+      <view class="xhs-card-footer">
+        <view class="xhs-tag">#{{prompt || '好物推荐'}}</view>
+        <view class="xhs-tag">#小红书文案</view>
+        <view class="copy-icon-btn" bindtap="onCopy" data-text="{{item}}">复制文案</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="history-card" wx:if="{{history.length > 0 && !loading}}">
+    <view class="history-header">
+      <text class="history-title">历史记录</text>
+      <text class="history-clear" bindtap="onClearHistory">清空</text>
+    </view>
+    <view class="history-item" wx:for="{{history}}" wx:key="time" bindtap="onHistoryTap" data-item="{{item}}">
+      <view class="history-left">
+        <text class="history-prompt">{{item.prompt}}</text>
+        <text class="history-time">{{item.timeAgo}}</text>
+      </view>
+      <text class="history-arrow">→</text>
+    </view>
+  </view>
+
+  <!-- 错误 -->
+  <view class="error-toast" wx:if="{{error}}">
+    <text>{{error}}</text>
+  </view>
+
+  <!-- 底部留白 -->
+  <view class="bottom-space"></view>
 </view>
