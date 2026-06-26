@@ -1,9 +1,36 @@
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 const DEEPSEEK_MODEL = 'deepseek-chat';
 
-const SYSTEM_PROMPT = `你是小红书爆款文案生成专家。根据用户输入生成小红书风格标题和文案。
-标题带emoji、口语化、有吸引力。文案第一人称体验分享，80-150字。
-返回纯JSON：{"titles":["标题1","标题2","标题3"],"contents":["文案1","文案2","文案3"]}`;
+const SYSTEM_PROMPT = `你是小红书爆款文案生成专家。根据用户输入，生成3种不同风格的文案。
+
+返回纯JSON：
+{
+  "variants": [
+    {
+      "style": "种草风",
+      "title": "带emoji的吸引人标题",
+      "content": "第一人称体验分享，80-150字，带emoji和分段",
+      "hashtags": ["标签1", "标签2", "标签3", "标签4", "标签5"]
+    },
+    {
+      "style": "测评风",
+      "title": "...",
+      "content": "...",
+      "hashtags": [...]
+    },
+    {
+      "style": "教程风",
+      "title": "...",
+      "content": "...",
+      "hashtags": [...]
+    }
+  ]
+}
+
+风格说明：
+- 种草风：热情真诚如朋友推荐，多用emoji，突出使用感受
+- 测评风：客观理性有分析，列出优缺点，干货分享
+- 教程风：步骤清晰 how-to 类型，实用性强，分点说明`;
 
 function extractJSON(text) {
   try { return JSON.parse(text); } catch (_) {}
@@ -76,14 +103,14 @@ exports.handler = async (event) => {
     }
 
     const result = extractJSON(content);
-    if (!Array.isArray(result.titles) || !Array.isArray(result.contents)) {
+    if (!Array.isArray(result.variants) || result.variants.length < 2) {
       return { statusCode: 502, headers, body: JSON.stringify({ success: false, error: 'AI 返回格式不正确' }) };
     }
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ success: true, titles: result.titles.slice(0, 5), contents: result.contents.slice(0, 3) }),
+      body: JSON.stringify({ success: true, variants: result.variants.slice(0, 3) }),
     };
 
   } catch (err) {

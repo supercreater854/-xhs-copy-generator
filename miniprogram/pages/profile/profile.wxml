@@ -1,0 +1,87 @@
+<view class="page">
+  <!-- 背景 -->
+  <view class="decor-circle decor-1"></view>
+
+  <!-- 顶部 -->
+  <view class="hero">
+    <text class="hero-title">我的</text>
+  </view>
+
+  <!-- 统计卡片 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-num">{{totalGenerations}}</text>
+      <text class="stat-label">生成次数</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{platformCount}}</text>
+      <text class="stat-label">覆盖平台</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{history.length}}</text>
+      <text class="stat-label">历史记录</text>
+    </view>
+  </view>
+
+  <!-- 历史 -->
+  <view class="history-section" wx:if="{{history.length > 0}}">
+    <view class="history-header">
+      <text class="section-title">最近记录</text>
+      <text class="history-clear" bindtap="onClearHistory">清空</text>
+    </view>
+    <view class="history-row" wx:for="{{history}}" wx:key="time"
+          bindtap="onHistoryTap" data-item="{{item}}">
+      <view class="h-left">
+        <view class="h-plats">
+          <view class="h-plat-dot" wx:for="{{item.platDots}}" wx:key="color"
+                wx:for-item="dot" style="background:{{dot.color}}"></view>
+        </view>
+        <text class="h-text">{{item.prompt}}</text>
+      </view>
+      <text class="h-time">{{item.timeAgo}}</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{history.length === 0}}">
+    <text class="empty-text">还没有生成过文案</text>
+    <text class="empty-sub">去创作页试试吧</text>
+  </view>
+
+  <!-- 收藏 -->
+  <view class="history-section" wx:if="{{collections.length > 0}}">
+    <view class="history-header">
+      <text class="section-title">我的收藏</text>
+      <text class="history-clear" bindtap="onClearCollections">清空</text>
+    </view>
+    <view class="coll-row" wx:for="{{collections}}" wx:key="title"
+          bindtap="onCollectionTap" data-item="{{item}}">
+      <view class="coll-style">{{item.style}}</view>
+      <view class="coll-main">
+        <text class="coll-title">{{item.title}}</text>
+        <text class="coll-preview">{{item.content}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="about-section">
+    <text class="section-title">关于</text>
+    <view class="about-row">
+      <text class="about-label">名称</text>
+      <text class="about-value">超级马卡龙</text>
+    </view>
+    <view class="about-row">
+      <text class="about-label">功能</text>
+      <text class="about-value">多平台文案生成</text>
+    </view>
+    <view class="about-row">
+      <text class="about-label">支持</text>
+      <text class="about-value">小红书 · 朋友圈 · 微博 · 抖音</text>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

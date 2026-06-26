@@ -1,3 +1,5 @@
 {
-  "navigationBarTitleText": "小红书文案生成"
+  "navigationBarTitleText": "超级马卡龙",
+  "shareAppMessage": true,
+  "shareTimeline": true
 }

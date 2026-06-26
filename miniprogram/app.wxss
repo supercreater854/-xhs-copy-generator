@@ -1,4 +1,15 @@
+/* === 超级马卡龙 · 全局设计系统 === */
+
+/* 基础 */
 page {
-  background: #f5f5f5;
-  font-family: -apple-system, "PingFang SC", sans-serif;
+  background: #FFFAF5;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1D1D1F;
+}
+
+/* 骨架屏微光动画 */
+@keyframes shimmer {
+  0%   { background-position: -400rpx 0; }
+  100% { background-position: 400rpx 0; }
 }

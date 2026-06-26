@@ -1,0 +1,239 @@
+/* === 我的 · 马卡龙个人中心 === */
+
+page {
+  background: #FFFAF5;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  padding: 0 40rpx;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* === 背景装饰 === */
+.decor-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100rpx);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+}
+.decor-1 {
+  width: 500rpx; height: 500rpx;
+  top: -60rpx; right: -100rpx;
+  background: radial-gradient(circle, rgba(255,107,138,0.35) 0%, rgba(255,107,138,0) 65%);
+}
+
+.hero, .stats-card, .history-section, .empty-state, .about-section, .bottom-space {
+  position: relative; z-index: 1;
+}
+
+/* === 顶部 === */
+.hero {
+  padding: 60rpx 0 28rpx;
+}
+.hero-title {
+  display: block;
+  font-size: 56rpx;
+  font-weight: 200;
+  color: #1D1D1F;
+  letter-spacing: 14rpx;
+}
+
+/* === 统计卡片 === */
+.stats-card {
+  display: flex;
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  padding: 40rpx 20rpx;
+  margin-bottom: 44rpx;
+  box-shadow: 0 2rpx 20rpx rgba(0,0,0,0.04);
+}
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+.stat-num {
+  display: block;
+  font-size: 58rpx;
+  font-weight: 200;
+  color: #FF6B8A;
+  line-height: 1.1;
+}
+.stat-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+  margin-top: 10rpx;
+  letter-spacing: 2rpx;
+  font-weight: 500;
+}
+.stat-divider {
+  width: 0.5rpx;
+  background: #F0F0F5;
+}
+
+/* === 通用标题 === */
+.section-title {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #999999;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  margin-bottom: 22rpx;
+}
+
+/* === 历史 === */
+.history-section { margin-bottom: 44rpx; }
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+.history-clear {
+  font-size: 26rpx;
+  color: #FF6B8A;
+  font-weight: 600;
+  padding: 8rpx;
+}
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26rpx 16rpx;
+  border-radius: 16rpx;
+  margin-bottom: 2rpx;
+  transition: all 0.15s ease;
+}
+.history-row:active {
+  background: rgba(0,0,0,0.02);
+}
+.h-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.h-plats {
+  display: flex;
+  gap: 6rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.h-plat-dot {
+  width: 16rpx; height: 16rpx;
+  border-radius: 50%;
+}
+.h-text {
+  font-size: 28rpx;
+  color: #1D1D1F;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 450;
+}
+.h-time {
+  font-size: 24rpx;
+  color: #B0B0B8;
+  flex-shrink: 0;
+  margin-left: 20rpx;
+}
+
+/* === 空状态 === */
+.empty-state {
+  padding: 100rpx 0;
+  text-align: center;
+  margin-bottom: 44rpx;
+  background: #FFFFFF;
+  border-radius: 28rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.03);
+}
+.empty-text {
+  display: block;
+  font-size: 29rpx;
+  color: #8E8E93;
+  font-weight: 400;
+}
+.empty-sub {
+  display: block;
+  font-size: 25rpx;
+  color: #B0B0B8;
+  margin-top: 10rpx;
+}
+
+/* === 关于 === */
+.about-section {
+  padding-top: 16rpx;
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 28rpx 28rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.03);
+}
+.about-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 4rpx;
+  border-bottom: 0.5rpx solid #F5F5F7;
+}
+.about-row:last-child { border-bottom: none; }
+.about-label {
+  font-size: 28rpx;
+  color: #8E8E93;
+}
+.about-value {
+  font-size: 28rpx;
+  color: #1D1D1F;
+  font-weight: 500;
+}
+
+/* === 底部 === */
+.bottom-space { height: 120rpx; }
+
+/* === 收藏 === */
+.coll-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  padding: 24rpx 16rpx;
+  border-radius: 16rpx;
+  margin-bottom: 2rpx;
+  transition: all 0.15s ease;
+}
+.coll-row:active { background: rgba(0,0,0,0.02); }
+.coll-style {
+  font-size: 22rpx;
+  color: #FF6B8A;
+  background: #FFF5F7;
+  padding: 6rpx 16rpx;
+  border-radius: 100rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+}
+.coll-main {
+  flex: 1;
+  min-width: 0;
+}
+.coll-title {
+  font-size: 28rpx;
+  color: #1D1D1F;
+  font-weight: 500;
+  display: block;
+  line-height: 1.4;
+  margin-bottom: 6rpx;
+}
+.coll-preview {
+  font-size: 24rpx;
+  color: #B0B0B8;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

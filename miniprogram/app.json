@@ -1,8 +1,22 @@
 {
-  "pages": ["pages/index/index"],
+  "pages": [
+    "pages/index/index",
+    "pages/inspiration/inspiration",
+    "pages/profile/profile"
+  ],
   "window": {
-    "navigationBarTitleText": "小红书文案生成",
-    "navigationBarBackgroundColor": "#ff2442",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#86868B",
+    "selectedColor": "#1D1D1F",
+    "backgroundColor": "#FFF5F2",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "创作" },
+      { "pagePath": "pages/inspiration/inspiration", "text": "灵感" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
   }
 }

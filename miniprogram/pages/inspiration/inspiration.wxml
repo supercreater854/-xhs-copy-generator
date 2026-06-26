@@ -1,0 +1,206 @@
+<view class="page">
+  <!-- 背景装饰 -->
+  <view class="decor-circle decor-1"></view>
+  <view class="decor-circle decor-2"></view>
+  <!-- 浮动 emoji -->
+  <view class="float-emoji f1">💄</view>
+  <view class="float-emoji f2">✨</view>
+  <view class="float-emoji f3">💋</view>
+  <view class="float-emoji f4">🌟</view>
+
+  <!-- 顶部 -->
+  <view class="hero">
+    <text class="hero-title">灵感墙</text>
+    <text class="hero-desc">每日精选爆款文案，激发你的创作灵感</text>
+  </view>
+
+  <!-- 实时热榜 -->
+  <view class="trending-bar" wx:if="{{trending.length > 0}}">
+    <view class="trending-label">
+      <text class="trending-dot"></text>
+      <text>热榜</text>
+      <text class="trending-source" wx:if="{{trendingSource}}">·{{trendingSource}}</text>
+    </view>
+    <swiper class="trending-swiper" vertical autoplay circular interval="2500" duration="600">
+      <swiper-item wx:for="{{trending}}" wx:key="rank">
+        <view class="trending-row">
+          <text class="trending-rank {{item.rank <= 3 ? 'rank-hot' : ''}}">{{item.rank}}</text>
+          <text class="trending-title">{{item.title}}</text>
+          <text class="trending-hot" wx:if="{{item.hot}}">{{item.hot}}</text>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <!-- 筛选 + 刷新 -->
+  <view class="top-bar">
+    <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="filter-chip {{activeFilter === '' ? 'active' : ''}}"
+            bindtap="onFilter" data-key="">全部</view>
+      <view class="filter-chip {{activeFilter === item.key ? 'active' : ''}}"
+            wx:for="{{platforms}}" wx:key="key"
+            bindtap="onFilter" data-key="{{item.key}}">
+        <text>{{item.icon}}</text>
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+    <view class="refresh-btn" bindtap="onRefresh">
+      <text class="refresh-icon">⟳</text>
+    </view>
+  </view>
+
+  <!-- 今日精选 Hero Card -->
+  <view class="hero-card {{dailyPick ? 'hero-enter' : ''}}" wx:if="{{dailyPick && activeFilter === ''}}"
+        style="background:{{dailyPick.platformBg}}"
+        bindtap="onCardTap" data-card="{{dailyPick}}">
+    <!-- 封面图片 -->
+    <view class="hc-cover">
+      <view class="hc-cover-circle" style="background:{{dailyPick.coverGradient}}">
+        <image class="hc-cover-img {{imgState[dailyPick.id] === 'loaded' ? 'img-loaded' : ''}}"
+               src="{{dailyPick.image}}"
+               mode="aspectFill"
+               data-id="{{dailyPick.id}}"
+               bindload="onImgLoad"
+               binderror="onImgError"
+               wx:if="{{dailyPick.image}}"></image>
+        <text class="hc-cover-emoji {{imgState[dailyPick.id] === 'loaded' ? 'emoji-hidden' : ''}}">{{dailyPick.coverEmoji}}</text>
+      </view>
+    </view>
+    <view class="hc-badge">
+      <text class="hc-badge-text">🔥 今日精选</text>
+    </view>
+    <view class="hc-body">
+      <text class="hc-platform">{{dailyPick.platformIcon}} {{dailyPick.platformName}}</text>
+      <text class="hc-title">{{dailyPick.title}}</text>
+      <text class="hc-preview">{{dailyPick.preview}}</text>
+      <view class="hc-tags">
+        <text class="hc-tag" wx:for="{{dailyPick.tags}}" wx:key="*this" wx:for-item="t">
+          #{{t}}
+        </text>
+      </view>
+    </view>
+    <view class="hc-cta">
+      <text>立即使用 →</text>
+    </view>
+  </view>
+
+  <!-- 分区内容 -->
+  <block wx:for="{{sections}}" wx:key="key" wx:for-item="section">
+    <view class="section" wx:if="{{activeFilter === '' || activeFilter === section.key}}">
+      <view class="section-header">
+        <text class="section-title">{{section.title}}</text>
+      </view>
+
+      <!-- 第一行：大卡片（左）+ 小卡片（右） -->
+      <view class="sec-row" wx:if="{{section.cards.length >= 2}}">
+        <view class="sec-card sec-card-large sec-enter shimmer"
+              style="background:{{section.cards[0].platformBg}}"
+              bindtap="onCardTap" data-card="{{section.cards[0]}}">
+          <view class="sc-cover">
+            <view class="sc-cover-circle" style="background:{{section.cards[0].coverGradient}}">
+              <image class="sc-cover-img {{imgState[section.cards[0].id] === 'loaded' ? 'img-loaded' : ''}}"
+                     src="{{section.cards[0].image}}"
+                     mode="aspectFill"
+                     data-id="{{section.cards[0].id}}"
+                     bindload="onImgLoad"
+                     binderror="onImgError"
+                     wx:if="{{section.cards[0].image}}"></image>
+              <text class="sc-cover-emoji {{imgState[section.cards[0].id] === 'loaded' ? 'emoji-hidden' : ''}}">{{section.cards[0].coverEmoji}}</text>
+            </view>
+          </view>
+          <text class="sc-product">{{section.cards[0].product}}</text>
+          <text class="sc-title">{{section.cards[0].title}}</text>
+          <text class="sc-preview">{{section.cards[0].preview}}</text>
+          <view class="sc-tags">
+            <text class="sc-tag" wx:for="{{section.cards[0].tags}}" wx:key="*this" wx:for-item="t" wx:if="{{index < 2}}">
+              #{{t}}
+            </text>
+          </view>
+        </view>
+        <view class="sec-card sec-card-small sec-enter shimmer"
+              style="background:{{section.cards[1].platformBg}}"
+              bindtap="onCardTap" data-card="{{section.cards[1]}}">
+          <view class="sc-cover sc-cover-sm">
+            <view class="sc-cover-circle sc-cover-circle-sm" style="background:{{section.cards[1].coverGradient}}">
+              <image class="sc-cover-img {{imgState[section.cards[1].id] === 'loaded' ? 'img-loaded' : ''}}"
+                     src="{{section.cards[1].image}}"
+                     mode="aspectFill"
+                     data-id="{{section.cards[1].id}}"
+                     bindload="onImgLoad"
+                     binderror="onImgError"
+                     wx:if="{{section.cards[1].image}}"></image>
+              <text class="sc-cover-emoji sc-cover-emoji-sm {{imgState[section.cards[1].id] === 'loaded' ? 'emoji-hidden' : ''}}">{{section.cards[1].coverEmoji}}</text>
+            </view>
+          </view>
+          <text class="sc-product">{{section.cards[1].product}}</text>
+          <text class="sc-title">{{section.cards[1].title}}</text>
+        </view>
+      </view>
+
+      <!-- 第二行：迷你卡片横排 -->
+      <view class="sec-row" wx:if="{{section.cards.length >= 4}}">
+        <view class="sec-card sec-card-mini sec-enter shimmer"
+              style="background:{{section.cards[2].platformBg}}"
+              bindtap="onCardTap" data-card="{{section.cards[2]}}">
+          <view class="sc-cover sc-cover-xs">
+            <view class="sc-cover-circle-xs" style="background:{{section.cards[2].coverGradient}}">
+              <image class="sc-cover-img {{imgState[section.cards[2].id] === 'loaded' ? 'img-loaded' : ''}}"
+                     src="{{section.cards[2].image}}"
+                     mode="aspectFill"
+                     data-id="{{section.cards[2].id}}"
+                     bindload="onImgLoad"
+                     binderror="onImgError"
+                     wx:if="{{section.cards[2].image}}"></image>
+              <text class="sc-cover-emoji sc-cover-emoji-xs {{imgState[section.cards[2].id] === 'loaded' ? 'emoji-hidden' : ''}}">{{section.cards[2].coverEmoji}}</text>
+            </view>
+          </view>
+          <text class="sc-product">{{section.cards[2].product}}</text>
+          <text class="sc-title">{{section.cards[2].title}}</text>
+        </view>
+        <view class="sec-card sec-card-mini sec-enter shimmer"
+              style="background:{{section.cards[3].platformBg}}"
+              bindtap="onCardTap" data-card="{{section.cards[3]}}">
+          <view class="sc-cover sc-cover-xs">
+            <view class="sc-cover-circle-xs" style="background:{{section.cards[3].coverGradient}}">
+              <image class="sc-cover-img {{imgState[section.cards[3].id] === 'loaded' ? 'img-loaded' : ''}}"
+                     src="{{section.cards[3].image}}"
+                     mode="aspectFill"
+                     data-id="{{section.cards[3].id}}"
+                     bindload="onImgLoad"
+                     binderror="onImgError"
+                     wx:if="{{section.cards[3].image}}"></image>
+              <text class="sc-cover-emoji sc-cover-emoji-xs {{imgState[section.cards[3].id] === 'loaded' ? 'emoji-hidden' : ''}}">{{section.cards[3].coverEmoji}}</text>
+            </view>
+          </view>
+          <text class="sc-product">{{section.cards[3].product}}</text>
+          <text class="sc-title">{{section.cards[3].title}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 详情弹窗 -->
+  <view class="modal-mask" wx:if="{{activeCard}}" bindtap="onCloseModal">
+    <view class="modal-card" catchtap="">
+      <view class="modal-header">
+        <view class="modal-plat">
+          <text>{{activeCard.platformIcon}} {{activeCard.platformName}}</text>
+        </view>
+        <text class="modal-close" bindtap="onCloseModal">✕</text>
+      </view>
+      <text class="modal-product">{{activeCard.product}}</text>
+      <text class="modal-title">{{activeCard.title}}</text>
+      <view class="modal-divider"></view>
+      <text class="modal-content">{{activeCard.content}}</text>
+      <view class="modal-tags" wx:if="{{activeCard.tags && activeCard.tags.length > 0}}">
+        <text class="modal-tag" wx:for="{{activeCard.tags}}" wx:key="*this">#{{item}}</text>
+      </view>
+      <view class="modal-actions">
+        <view class="m-action-primary" bindtap="onCopyCard">复制整篇</view>
+        <view class="m-action-secondary" bindtap="onUseCard">去创作</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>

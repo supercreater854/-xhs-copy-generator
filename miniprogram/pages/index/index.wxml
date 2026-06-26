@@ -1,122 +1,163 @@
 <view class="page">
-  <!-- 顶部品牌区 -->
+  <!-- 背景装饰 -->
+  <view class="decor-circle decor-1"></view>
+  <view class="decor-circle decor-2"></view>
+  <view class="decor-circle decor-3"></view>
+
+  <!-- 顶部 -->
   <view class="hero">
-    <view class="hero-badge">AI · 小红书</view>
-    <text class="hero-title">智能文案生成器</text>
-    <text class="hero-desc">输入产品，一键生成爆款种草文案</text>
+    <text class="hero-title">超级马卡龙</text>
+    <text class="hero-desc">选平台 · 定风格 · 秒出爆款文案</text>
   </view>
 
   <!-- 输入区 -->
-  <view class="input-card">
+  <view class="input-area">
     <view class="input-row">
-      <input 
-        class="main-input" 
-        placeholder="输入产品名称，如「口红」" 
-        value="{{prompt}}" 
-        bindinput="onInput" 
+      <input
+        class="main-input"
+        placeholder="输入产品、场景或想法，如「干皮夏日底妆」"
+        value="{{prompt}}"
+        bindinput="onInput"
         confirm-type="done"
-        focus="{{inputFocus}}"
       />
       <view class="send-btn {{prompt ? 'active' : ''}}" bindtap="onGenerate">
-        <text class="send-icon">{{loading ? '⏳' : '↑'}}</text>
-      </view>
-    </view>
-
-    <!-- 热门标签 -->
-    <view class="tags-row">
-      <text class="tags-label">热门</text>
-      <scroll-view class="tags-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-        <view class="tag {{activeTag === item ? 'active' : ''}}" 
-              wx:for="{{hotTags}}" wx:key="*this" 
-              bindtap="onTagTap" data-tag="{{item}}">
-          {{item}}
-        </view>
-      </scroll-view>
-    </view>
-
-    <!-- 风格选择 -->
-    <view class="style-row">
-      <text class="style-label">文风</text>
-      <view class="style-options">
-        <view class="style-chip {{activeStyle === item.value ? 'active' : ''}}" 
-              wx:for="{{styles}}" wx:key="value" 
-              bindtap="onStyleTap" data-style="{{item.value}}">
-          {{item.label}}
-        </view>
+        <text class="send-arrow">↑</text>
       </view>
     </view>
   </view>
 
-  <!-- 加载骨架屏 -->
-  <view class="skeleton-card" wx:if="{{loading}}">
-    <view class="sk-line sk-title"></view>
-    <view class="sk-line sk-t1"></view>
-    <view class="sk-line sk-t2"></view>
-    <view class="sk-line sk-t3"></view>
-    <view class="sk-line sk-body"></view>
-    <view class="sk-line sk-body-short"></view>
+  <!-- 平台选择器（多选） -->
+  <view class="platform-section">
+    <text class="section-label">发布平台</text>
+    <scroll-view class="platform-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="platform-item {{activePlatforms.indexOf(item.key) > -1 ? 'active' : ''}}"
+            wx:for="{{platforms}}" wx:key="key"
+            bindtap="onPlatformTap" data-key="{{item.key}}">
+        <view class="platform-dot" style="background:{{item.gradient}}"></view>
+        <text class="platform-icon">{{item.icon}}</text>
+        <text class="platform-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
   </view>
 
-  <!-- 结果区 -->
-  <view class="result-card" wx:if="{{result && !loading}}">
-    <view class="result-header">
-      <text class="result-icon">✦</text>
-      <text class="result-label">生成结果</text>
-      <view class="result-actions">
-        <view class="action-btn" bindtap="onCopyAll">全部复制</view>
-        <view class="action-btn" bindtap="onRegenerate">重新生成</view>
-      </view>
+  <!-- 场景快捷标签 -->
+  <scroll-view class="chips-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="chip-scene {{activeTag === item ? 'active' : ''}}"
+          wx:for="{{sceneTags}}" wx:key="*this"
+          bindtap="onTagTap" data-tag="{{item}}">
+      {{item}}
     </view>
-
-    <!-- 标题 -->
-    <view class="titles-block">
-      <text class="block-label">推荐标题</text>
-      <view class="title-card" wx:for="{{result.titles}}" wx:key="index" bindtap="onCopy" data-text="{{item}}">
-        <text class="title-num">{{index + 1}}</text>
-        <text class="title-text">{{item}}</text>
-        <text class="title-copy">复制</text>
-      </view>
+    <view class="chip-divider">·</view>
+    <view class="chip {{activeTag === item ? 'active' : ''}}"
+          wx:for="{{hotTags}}" wx:key="*this"
+          bindtap="onTagTap" data-tag="{{item}}">
+      {{item}}
     </view>
+  </scroll-view>
 
-    <!-- 文案预览卡片（模拟小红书） -->
-    <view class="block-label">种草文案</view>
-    <view class="xhs-card" wx:for="{{result.contents}}" wx:key="index">
-      <view class="xhs-card-header">
-        <view class="xhs-avatar"></view>
-        <view>
-          <text class="xhs-name">种草小助手</text>
-          <text class="xhs-time">刚刚</text>
+  <!-- 示例卡片 -->
+  <view class="examples-section" wx:if="{{!result && !loading}}">
+    <text class="section-title">快速体验</text>
+    <view class="example-card" wx:for="{{examples}}" wx:key="product"
+          bindtap="onExampleTap" data-index="{{index}}">
+      <view class="example-head">
+        <view class="example-platform">
+          <view class="ex-plat-dot {{item.platform}}"></view>
+          <text class="ex-plat-name">{{item.platformName}}</text>
+        </view>
+        <text class="example-product">{{item.product}}</text>
+      </view>
+      <text class="example-title">{{item.title}}</text>
+    </view>
+  </view>
+
+  <!-- 加载 -->
+  <view class="skeleton" wx:if="{{loading}}">
+    <view class="sk-line sk-long"></view>
+    <view class="sk-line sk-mid"></view>
+    <view class="sk-line sk-mid"></view>
+    <view class="sk-line sk-short"></view>
+    <view class="sk-block"></view>
+  </view>
+
+  <!-- 结果 -->
+  <view class="result-area" wx:if="{{result && !loading}}">
+    <!-- 风格切换 Tab -->
+    <scroll-view class="variant-tabs" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="variant-tab {{activeVariant === index ? 'active' : ''}}"
+            wx:for="{{result.variants}}" wx:key="style"
+            bindtap="onVariantTap" data-index="{{index}}">
+        <text class="vt-style">{{item.style}}</text>
+        <text class="vt-hint">第{{index + 1}}组</text>
+      </view>
+    </scroll-view>
+
+    <!-- 当前变体（只显示 activeVariant 对应项） -->
+    <block wx:for="{{result.variants}}" wx:key="style" wx:for-index="vi">
+      <view class="variant-card" wx:if="{{vi === activeVariant}}"
+            bindtouchstart="touchStart" bindtouchend="onSwipeResult">
+        <!-- 标题 -->
+        <view class="v-title-row" bindtap="onCopyText" data-text="{{item.title}}">
+          <text class="v-title-text">{{item.title}}</text>
+          <text class="v-title-copy">复制</text>
+        </view>
+
+        <!-- 正文 -->
+        <view class="v-content-card" bindtap="onCopyText" data-text="{{item.content}}">
+          <text class="v-content-text">{{item.content}}</text>
+          <view class="v-content-footer">
+            <text class="v-content-copy">轻触复制正文</text>
+          </view>
+        </view>
+
+        <!-- 标签 -->
+        <view class="v-tags" wx:if="{{item.hashtags && item.hashtags.length > 0}}">
+          <text class="v-tag" wx:for="{{item.hashtags}}" wx:key="*this" wx:for-item="tag"
+                bindtap="onCopyText" data-text="{{'#' + tag}}">
+            #{{tag}}
+          </text>
+        </view>
+
+        <!-- 变体指示器 -->
+        <view class="variant-dots">
+          <view class="v-dot {{activeVariant === index ? 'active' : ''}}"
+                wx:for="{{result.variants}}" wx:key="style"
+                bindtap="onVariantTap" data-index="{{index}}"></view>
         </view>
       </view>
-      <text class="xhs-content">{{item}}</text>
-      <view class="xhs-card-footer">
-        <view class="xhs-tag">#{{prompt || '好物推荐'}}</view>
-        <view class="xhs-tag">#小红书文案</view>
-        <view class="copy-icon-btn" bindtap="onCopy" data-text="{{item}}">复制文案</view>
+    </block>
+
+    <!-- 操作栏 -->
+    <view class="result-actions">
+      <view class="action-primary" bindtap="onCopyAll">一键复制整篇</view>
+      <view class="action-collect {{isCollected ? 'collected' : ''}}" bindtap="onToggleCollect">
+        <text>{{isCollected ? '♥' : '♡'}}</text>
       </view>
+      <view class="action-secondary" bindtap="onRegenerate">重新生成</view>
     </view>
   </view>
 
-  <!-- 历史记录 -->
-  <view class="history-card" wx:if="{{history.length > 0 && !loading}}">
+  <!-- 历史 -->
+  <view class="history-area" wx:if="{{history.length > 0 && !loading && !result}}">
     <view class="history-header">
-      <text class="history-title">历史记录</text>
+      <text class="section-title">最近</text>
       <text class="history-clear" bindtap="onClearHistory">清空</text>
     </view>
-    <view class="history-item" wx:for="{{history}}" wx:key="time" bindtap="onHistoryTap" data-item="{{item}}">
-      <view class="history-left">
-        <text class="history-prompt">{{item.prompt}}</text>
-        <text class="history-time">{{item.timeAgo}}</text>
+    <view class="history-row" wx:for="{{history}}" wx:key="time"
+          bindtap="onHistoryTap" data-item="{{item}}">
+      <view class="history-platforms">
+        <view class="h-plat-dot" wx:for="{{item.platDots}}" wx:key="color"
+              style="background:{{item.color}}"></view>
       </view>
-      <text class="history-arrow">→</text>
+      <text class="history-text">{{item.prompt}}</text>
+      <text class="history-time">{{item.timeAgo}}</text>
     </view>
   </view>
 
   <!-- 错误 -->
-  <view class="error-toast" wx:if="{{error}}">
+  <view class="error-msg" wx:if="{{error}}">
     <text>{{error}}</text>
   </view>
 
-  <!-- 底部留白 -->
   <view class="bottom-space"></view>
 </view>
