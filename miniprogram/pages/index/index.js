@@ -288,6 +288,40 @@ Page({
     this.setData({ collections });
   },
 
+  onPublish() {
+    wx.vibrateShort({ type: 'medium' });
+    const r = this.data.result;
+    if (!r || !r.variants) return;
+    const v = r.variants[this.data.activeVariant];
+    if (!v) return;
+
+    const app = getApp();
+    const base = app.globalData.apiUrl.replace(/\/api\/generate$/, '');
+    const platform = this.data.activePlatforms[0] || 'xiaohongshu';
+
+    wx.showLoading({ title: '发布中...', mask: true });
+    wx.request({
+      url: base + '/api/publish',
+      method: 'POST',
+      header: { 'Content-Type': 'application/json' },
+      data: {
+        product: this.data.prompt.trim(),
+        title: v.title,
+        content: v.content,
+        tags: v.hashtags || [],
+        platform: platform,
+      },
+      success: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '已发布到灵感墙 ✨', icon: 'success', duration: 1800 });
+      },
+      fail: () => {
+        wx.hideLoading();
+        wx.showToast({ title: '发布失败，请重试', icon: 'none', duration: 1500 });
+      }
+    });
+  },
+
   onHistoryTap(e) {
     const item = e.currentTarget.dataset.item;
     this.setData({ prompt: item.prompt, activeTag: '', activePlatforms: item.platforms || ['xiaohongshu'] });
