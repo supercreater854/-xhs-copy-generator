@@ -42,22 +42,19 @@ Page({
     this._generate(config);
   },
 
-  /* 构建用户消息 — 仅组合原始输入，风格/长度由后端 Writing Profile 处理 */
-  _buildMessage(config, extraAction) {
+  /* 构建用户消息 — 操作指令由后端系统提示词处理，这里只传原文 */
+  _buildMessage(config) {
     let msg = config.prompt.trim();
-    if (extraAction) {
-      msg = extraAction + '\n\n原文内容：' + msg;
-    }
     msg += '\n\n请严格按照JSON格式返回结果。';
     return msg;
   },
 
-  _generate(config, extraAction) {
+  _generate(config, actionKey) {
     this.setData({ loading: true, error: '', cards: [] });
 
     wx.showLoading({ title: '正在创作...', mask: true });
 
-    const prompt = this._buildMessage(config, extraAction);
+    const prompt = this._buildMessage(config);
 
     wx.request({
       url: API_URL,
@@ -67,7 +64,8 @@ Page({
       data: {
         prompt,
         length: config.length || 'standard',
-        style: config.style || 'smart'
+        style: config.style || 'smart',
+        action: actionKey || ''
       },
       success: (res) => {
         wx.hideLoading();
@@ -81,6 +79,23 @@ Page({
 
         if (data && data.success && data.variants) {
           const cards = data.variants.slice(0, 3).map((c, i) => ({ ...c, _k: 'v' + i }));
+          const collections = loadCollections();
+          const collected = {};
+          cards.forEach((c, i) => {
+            collected[i] = isCollected(collections, c);
+          });
+          this.setData({ cards, collected, loading: false });
+        } else if (data && data.titles) {
+          // 兼容旧版后端（部署中的版本返回 titles/contents 格式）
+          const cards = data.titles.map((t, i) => ({
+            _k: 't' + i,
+            style: '种草风',
+            title: t,
+            content: data.contents[i] || '',
+            hashtags: [],
+            image_prompt: '',
+            comment_copy: ''
+          }));
           const collections = loadCollections();
           const collected = {};
           cards.forEach((c, i) => {
@@ -137,7 +152,7 @@ Page({
         ...this.data.config,
         prompt: card.content || this.data.config.prompt
       };
-      this._generate(newConfig, extra);
+      this._generate(newConfig, action);
       setTimeout(() => this.setData({ actionLoading: false }), 500);
     }
   },
@@ -148,7 +163,7 @@ Page({
     if (act === 'change-platform') {
       wx.navigateBack();
     } else if (act === 'more') {
-      this._generate(this.data.config, '请生成不同角度的版本。');
+      this._generate(this.data.config);
     } else {
       wx.showToast({ title: '即将支持', icon: 'none', duration: 1200 });
     }

@@ -157,6 +157,14 @@ const LENGTH_GUIDES = {
   long:     '字数：800-1500字，是一篇完整的文章。'
 };
 
+/* 编辑操作指南 — 替代长度指南，避免与扩写/缩写矛盾 */
+const ACTION_GUIDES = {
+  polish:  '【操作：润色优化】用户会发送一篇文章给你。请润色优化它，使表达更流畅自然，但保持原有风格和结构不变。不要改变文章的篇幅和信息量。',
+  expand:  '【操作：扩写】用户会发送一篇文章给你。请扩写它，增加2-3倍的篇幅。补充更多细节、案例和数据支撑，让内容更丰满充实。保持原有风格。',
+  shorten: '【操作：缩写】用户会发送一篇文章给你。请缩写它，压缩到原文的30%-50%，只保留核心信息和观点，去掉冗余。保持原有风格。',
+  deai:    '【操作：去AI味】用户会发送一篇文章给你。请重写它，去掉明显的AI痕迹。使用更口语化、更有个性的表达，加入个人感受和真实体验感，让表达更像真人手写。保持原有风格。'
+};
+
 /* 通用格式要求 */
 const FORMAT_GUIDE = `
 【输出格式】
@@ -181,10 +189,24 @@ comment_copy 要能引发评论区互动。
 `;
 
 /* 构建系统提示 */
-function buildSystemPrompt(length, style) {
+function buildSystemPrompt(length, style, action) {
   const profile = WRITING_PROFILES[style] || WRITING_PROFILES.smart;
-  const lengthGuide = LENGTH_GUIDES[length] || LENGTH_GUIDES.standard;
 
+  // 编辑操作：用 action 指南替代长度指南，避免矛盾指令
+  if (action && ACTION_GUIDES[action]) {
+    return [
+      profile.persona,
+      '',
+      profile.prompt,
+      '',
+      ACTION_GUIDES[action],
+      '',
+      '【输出格式 - 重要】\n返回纯JSON（不要markdown代码块包裹），包含1个variant：\n{\n  "variants": [\n    {\n      "style": "使用的风格名称",\n      "title": "根据操作后内容重新拟定的标题",\n      "content": "处理后的正文",\n      "hashtags": ["标签1","标签2","标签3","标签4","标签5"],\n      "image_prompt": "适合配图的画面描述（英文）",\n      "comment_copy": "适合发在评论区的互动文案"\n    }\n  ]\n}\nhashtags 要实用、搜索量大，不要编造不存在的标签。\n确保输出是有效JSON，不要在JSON外添加任何文字。'
+    ].join('\n');
+  }
+
+  // 正常创作：用长度指南
+  const lengthGuide = LENGTH_GUIDES[length] || LENGTH_GUIDES.standard;
   return [
     profile.persona,
     '',
@@ -248,17 +270,19 @@ exports.handler = async (event) => {
     return { statusCode: 200, headers: corsHeaders, body: '' };
   }
 
-  let prompt, length, style;
+  let prompt, length, style, action;
   if (event.httpMethod === 'GET') {
     prompt = event.queryStringParameters?.prompt;
     length = event.queryStringParameters?.length || 'standard';
     style  = event.queryStringParameters?.style  || 'smart';
+    action = event.queryStringParameters?.action || '';
   } else if (event.httpMethod === 'POST') {
     try {
       const body = JSON.parse(event.body || '{}');
       prompt = body?.prompt;
       length = body?.length || 'standard';
       style  = body?.style  || 'smart';
+      action = body?.action || '';
     } catch (_) {}
   } else {
     return { statusCode: 405, headers: corsHeaders, body: JSON.stringify({ success: false, error: '仅支持 GET/POST' }) };
@@ -275,9 +299,9 @@ exports.handler = async (event) => {
       return { statusCode: 500, headers: corsHeaders, body: JSON.stringify({ success: false, error: '服务端未配置 API Key' }) };
     }
 
-    const systemPrompt = buildSystemPrompt(length, style);
+    const systemPrompt = buildSystemPrompt(length, style, action);
 
-    console.log('[generate] style=' + style + ' length=' + length + ' prompt_len=' + prompt.length);
+    console.log('[generate] style=' + style + ' length=' + length + ' action=' + (action || '-') + ' prompt_len=' + prompt.length);
 
     const aiRes = await fetch(DEEPSEEK_API_URL, {
       method: 'POST',
