@@ -15,7 +15,7 @@ const LENGTH_MODES = [
 
 /* 动态主题色 */
 const THEME_MAP = {
-  smart:    { accent: '#AEAEB2', light: '#F5F5F7', glow: 'rgba(174,174,178,0.10)', shadow: 'rgba(174,174,178,0.22)', border: 'rgba(174,174,178,0.10)' },
+  smart:    { accent: '#34C759', light: '#F0FFF4', glow: 'rgba(52,199,89,0.12)',  shadow: 'rgba(52,199,89,0.25)',  border: 'rgba(52,199,89,0.10)' },
   inspire:  { accent: '#FF9F43', light: '#FFF8F0', glow: 'rgba(255,159,67,0.12)',  shadow: 'rgba(255,159,67,0.28)',  border: 'rgba(255,159,67,0.10)' },
   standard: { accent: '#FF6B8A', light: '#FFF5F7', glow: 'rgba(255,107,138,0.12)', shadow: 'rgba(255,107,138,0.28)', border: 'rgba(255,107,138,0.10)' },
   deep:     { accent: '#C4A6FF', light: '#F8F4FF', glow: 'rgba(196,166,255,0.12)', shadow: 'rgba(196,166,255,0.28)', border: 'rgba(196,166,255,0.10)' },
