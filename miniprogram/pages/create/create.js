@@ -1,9 +1,5 @@
 const app = getApp();
 
-/* 场景标签 */
-const SCENE_TAGS = ['干皮夏日底妆', '通勤穿搭推荐', '平价好物分享', '学生党护肤', '周末探店打卡', '换季敏感肌'];
-const HOT_TAGS = ['口红', '防晒霜', '粉底液', '精华', '面霜', '眼影盘', '腮红'];
-
 /* 文案长度 */
 const LENGTH_MODES = [
   { key: 'smart',    label: '智能',   hint: 'AI 自动',  words: '自适应' },
@@ -68,9 +64,6 @@ function buildItems(baseItems, currentTheme, activeKey, keyField) {
 Page({
   data: {
     prompt: '',
-    activeTag: '',
-    sceneTags: SCENE_TAGS,
-    hotTags: HOT_TAGS,
     activeLength: 'standard',
     activeStyle: 'smart',
     advancedOpen: false,
@@ -118,13 +111,7 @@ Page({
   },
 
   onInput(e) {
-    this.setData({ prompt: e.detail.value, activeTag: '' });
-  },
-
-  onTagTap(e) {
-    const tag = e.currentTarget.dataset.tag;
-    wx.vibrateShort({ type: 'light' });
-    this.setData({ prompt: tag, activeTag: tag });
+    this.setData({ prompt: e.detail.value });
   },
 
   onLengthTap(e) {
@@ -169,7 +156,7 @@ Page({
   onHistoryTap(e) {
     const item = e.currentTarget.dataset.item;
     wx.vibrateShort({ type: 'light' });
-    this.setData({ prompt: item.prompt, activeTag: '' });
+    this.setData({ prompt: item.prompt });
     this._applyTheme(item.length || 'standard');
     this.onGenerate();
   },

@@ -15,7 +15,7 @@
   transition: background 0.45s cubic-bezier(0.25,0.1,0.25,1);
 }
 
-.hero, .input-card, .tags-scroll, .section, .generate-btn {
+.hero, .input-card, .section, .generate-btn {
   position: relative;
   z-index: 1;
 }
@@ -64,43 +64,6 @@
   border-top: 0.5rpx solid #F5F5F7;
 }
 .if-count { font-size: 22rpx; color: #C7C7CC; }
-
-/* 场景标签 */
-.tags-scroll {
-  white-space: nowrap;
-  margin-bottom: 32rpx;
-}
-.tag-scene, .tag-hot {
-  display: inline-block;
-  font-size: 25rpx;
-  padding: 12rpx 26rpx;
-  border-radius: 100rpx;
-  margin-right: 12rpx;
-  font-weight: 500;
-  transition: all 0.2s;
-  background: #FFFFFF;
-  color: #636366;
-  box-shadow: 0 1rpx 8rpx rgba(0,0,0,0.03);
-}
-.tag-scene.active {
-  background: #FF6B8A;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 14rpx rgba(255,107,138,0.25);
-}
-.tag-hot.active {
-  background: #1D1D1F;
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 14rpx rgba(0,0,0,0.15);
-}
-.tag-scene:active, .tag-hot:active { transform: scale(0.95); }
-.tag-divider {
-  display: inline-block;
-  width: 1rpx;
-  height: 32rpx;
-  background: #E5E5EA;
-  margin: 0 6rpx;
-  vertical-align: middle;
-}
 
 /* 通用 section */
 .section { margin-bottom: 32rpx; }

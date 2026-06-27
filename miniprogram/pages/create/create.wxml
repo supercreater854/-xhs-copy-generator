@@ -26,15 +26,6 @@
     </view>
   </view>
 
-  <!-- 场景标签 -->
-  <scroll-view class="tags-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-    <view class="tag-scene {{activeTag === item ? 'active' : ''}}"
-          wx:for="{{sceneTags}}" wx:key="*this" bindtap="onTagTap" data-tag="{{item}}">{{item}}</view>
-    <view class="tag-divider"></view>
-    <view class="tag-hot {{activeTag === item ? 'active' : ''}}"
-          wx:for="{{hotTags}}" wx:key="*this" bindtap="onTagTap" data-tag="{{item}}">{{item}}</view>
-  </scroll-view>
-
   <!-- 文案长度 -->
   <view class="section">
     <text class="section-label">文案长度</text>
