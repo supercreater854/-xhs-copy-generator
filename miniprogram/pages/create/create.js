@@ -20,14 +20,14 @@ const THEME_MAP = {
 
 /* 风格 — 8套 Writing Profile，切换风格=换作者 */
 const STYLES = [
-  { key: 'smart',   label: '智能',     desc: '自动选择最佳风格' },
+  { key: 'smart',   label: '智能',     desc: '自动选择最佳写法' },
   { key: 'natural', label: '自然分享', desc: '像朋友聊天分享' },
-  { key: 'viral',   label: '爆款种草', desc: '高感染力推荐' },
-  { key: 'pro',     label: '专业干货', desc: '深度分析有据' },
-  { key: 'story',   label: '故事叙述', desc: '情节带入共鸣' },
-  { key: 'minimal', label: '高级简约', desc: '克制留白有品味' },
-  { key: 'emotion', label: '情绪共鸣', desc: '温暖陪伴理解你' },
-  { key: 'convert', label: '营销转化', desc: '说服下单一步到位' }
+  { key: 'viral',   label: '爆款吸引', desc: '制造好奇和共鸣' },
+  { key: 'pro',     label: '专业深析', desc: '深度分析有层次' },
+  { key: 'story',   label: '故事叙述', desc: '用故事打动读者' },
+  { key: 'minimal', label: '极简精炼', desc: '精准克制有留白' },
+  { key: 'emotion', label: '情绪共鸣', desc: '温暖共情有力量' },
+  { key: 'convert', label: '说服行动', desc: '逻辑推进促行动' }
 ];
 
 function timeAgo(ts) {

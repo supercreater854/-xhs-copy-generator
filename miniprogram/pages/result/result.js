@@ -44,9 +44,7 @@ Page({
 
   /* 构建用户消息 — 操作指令由后端系统提示词处理，这里只传原文 */
   _buildMessage(config) {
-    let msg = config.prompt.trim();
-    msg += '\n\n请严格按照JSON格式返回结果。';
-    return msg;
+    return config.prompt.trim();
   },
 
   _generate(config, actionKey) {
