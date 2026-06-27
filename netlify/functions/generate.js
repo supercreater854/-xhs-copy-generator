@@ -152,6 +152,18 @@ function buildSystemPrompt(length, style, action) {
   ].join('\n');
 }
 
+/* 最低字数阈值 — 用于生成后实际校验 */
+const MIN_CHARS = { smart: 100, inspire: 50, standard: 150, deep: 400, long: 800 };
+
+function checkLength(variants, lengthMode) {
+  const min = MIN_CHARS[lengthMode] || 100;
+  for (const v of variants) {
+    const clen = (v.content || '').replace(/[\s\n]/g, '').length;
+    if (clen < min) return false;
+  }
+  return true;
+}
+
 /* JSON 提取与修复 */
 function extractJSON(text) {
   // 1. 直接解析
@@ -235,54 +247,89 @@ exports.handler = async (event) => {
 
     const systemPrompt = buildSystemPrompt(length, style, action);
     const maxTok = maxTokensForLength(action ? 'standard' : length);
+    const minChars = MIN_CHARS[length] || 100;
 
-    console.log('[generate] style=' + style + ' length=' + length + ' action=' + (action || '-') + ' prompt_len=' + prompt.length + ' max_tokens=' + maxTok);
+    let variants = null;
+    let userPrompt = prompt.trim();
+    const maxAttempts = action ? 1 : 3; // 编辑操作不重试
 
-    const aiRes = await fetch(DEEPSEEK_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: DEEPSEEK_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: prompt.trim() },
-        ],
-        temperature: 0.7,
-        max_tokens: maxTok
-      }),
-      signal: createTimeout(action ? 35000 : (length === 'long' ? 60000 : (length === 'deep' ? 45000 : 35000))),
-    });
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      console.log('[generate] 第' + (attempt+1) + '次 style=' + style + ' length=' + length + ' action=' + (action || '-') + ' max_tokens=' + maxTok);
 
-    if (!aiRes.ok) {
-      const errText = await aiRes.text().catch(() => '无法读取错误响应');
-      console.error('[generate] DeepSeek API 错误', aiRes.status, errText.slice(0, 300));
-      return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 服务返回错误 (' + aiRes.status + ')，请稍后重试' }) };
+      const aiRes = await fetch(DEEPSEEK_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: DEEPSEEK_MODEL,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          temperature: 0.5,
+          max_tokens: maxTok
+        }),
+        signal: createTimeout(length === 'long' ? 70000 : 45000),
+      });
+
+      if (!aiRes.ok) {
+        const errText = await aiRes.text().catch(() => '无法读取错误响应');
+        console.error('[generate] DeepSeek API 错误', aiRes.status, errText.slice(0, 300));
+        if (attempt < maxAttempts - 1) continue;
+        return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 服务返回错误 (' + aiRes.status + ')，请稍后重试' }) };
+      }
+
+      const aiData = await aiRes.json();
+      const content = aiData.choices?.[0]?.message?.content;
+      if (!content) {
+        console.error('[generate] DeepSeek 返回内容为空');
+        if (attempt < maxAttempts - 1) continue;
+        return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 返回内容为空，请重试' }) };
+      }
+
+      console.log('[generate] 返回长度=' + content.length);
+
+      let result;
+      try {
+        result = extractJSON(content);
+      } catch (e) {
+        console.error('[generate] JSON解析失败:', e.message);
+        if (attempt < maxAttempts - 1) continue;
+        return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 返回格式不正确，请重试' }) };
+      }
+
+      if (!Array.isArray(result.variants) || result.variants.length === 0) {
+        console.error('[generate] variants 格式不正确');
+        if (attempt < maxAttempts - 1) continue;
+        return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 返回格式不正确，请重试' }) };
+      }
+
+      const actualLens = result.variants.map(v => (v.content || '').replace(/[\s\n]/g, '').length);
+      console.log('[generate] 各variant字数: ' + actualLens.join(','));
+
+      // 字数达标或最后一次尝试，接受结果
+      if (checkLength(result.variants, length) || attempt >= maxAttempts - 1) {
+        variants = result.variants;
+        console.log('[generate] 接受结果 attempt=' + (attempt+1));
+        break;
+      }
+
+      // 字数不够，构造重试 prompt — 直接用中文命令，比系统提示词有效得多
+      const min = MIN_CHARS[length] || 150;
+      userPrompt = `你上一次回复太短了！正文 content 字段只有${actualLens[0] || 0}个字，远低于${min}字的要求。请重新生成，确保 content 至少${min}个汉字，必须多分段、每段充分展开，不要偷懒。用户原始输入：${prompt.trim()}`;
+      console.log('[generate] 字数不足，重试...');
     }
 
-    const aiData = await aiRes.json();
-    const content = aiData.choices?.[0]?.message?.content;
-    if (!content) {
-      console.error('[generate] DeepSeek 返回内容为空');
-      return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 返回内容为空，请重试' }) };
+    if (!variants) {
+      return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: '生成失败，请重试' }) };
     }
-
-    console.log('[generate] 返回长度=' + content.length);
-
-    const result = extractJSON(content);
-    if (!Array.isArray(result.variants) || result.variants.length === 0) {
-      console.error('[generate] variants 格式不正确');
-      return { statusCode: 502, headers: corsHeaders, body: JSON.stringify({ success: false, error: 'AI 返回格式不正确，请重试' }) };
-    }
-
-    console.log('[generate] 成功 ' + result.variants.length + ' 组');
 
     return {
       statusCode: 200,
       headers: corsHeaders,
-      body: JSON.stringify({ success: true, variants: result.variants.slice(0, 3) }),
+      body: JSON.stringify({ success: true, variants: variants.slice(0, 3) }),
     };
 
   } catch (err) {
