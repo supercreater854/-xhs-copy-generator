@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "loading-dot": "/components/loading-dot/loading-dot",
+    "result-card": "/components/result-card/result-card"
+  },
+  "navigationBarTitleText": "作品"
+}

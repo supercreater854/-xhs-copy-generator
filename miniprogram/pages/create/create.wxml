@@ -1,0 +1,87 @@
+<view class="page">
+
+  <!-- 顶部主题光晕 -->
+  <view class="theme-glow" style="background: radial-gradient(circle at 50% 0%, {{theme.glow}} 0%, transparent 70%)"></view>
+
+  <!-- Logo + 欢迎语 -->
+  <view class="hero">
+    <logo-mark size="{{80}}"></logo-mark>
+    <text class="hero-title">超级马卡龙</text>
+    <text class="hero-sub">让灵感，更容易变成作品</text>
+  </view>
+
+  <!-- 超大输入框 -->
+  <view class="input-card white-card" style="border: 1rpx solid {{theme.border}}">
+    <textarea
+      class="main-input"
+      placeholder="输入产品、场景或想法..."
+      value="{{prompt}}"
+      bindinput="onInput"
+      auto-height
+      maxlength="200"
+      show-confirm-bar="{{false}}"
+    />
+    <view class="input-footer">
+      <text class="if-count">{{prompt.length || 0}}/200</text>
+    </view>
+  </view>
+
+  <!-- 场景标签 -->
+  <scroll-view class="tags-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+    <view class="tag-scene {{activeTag === item ? 'active' : ''}}"
+          wx:for="{{sceneTags}}" wx:key="*this" bindtap="onTagTap" data-tag="{{item}}">{{item}}</view>
+    <view class="tag-divider"></view>
+    <view class="tag-hot {{activeTag === item ? 'active' : ''}}"
+          wx:for="{{hotTags}}" wx:key="*this" bindtap="onTagTap" data-tag="{{item}}">{{item}}</view>
+  </scroll-view>
+
+  <!-- 文案长度 -->
+  <view class="section">
+    <text class="section-label">文案长度</text>
+    <view class="length-row">
+      <view class="length-chip {{item.isActive ? 'active' : ''}}"
+            wx:for="{{lengthModes}}" wx:key="key"
+            bindtap="onLengthTap" data-key="{{item.key}}"
+            style="{{item.activeStyle}}">
+        <text class="lc-label" style="{{item.labelStyle}}">{{item.label}}</text>
+        <text class="lc-hint">{{item.hint}}</text>
+        <text class="lc-words">{{item.words}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 风格选择 -->
+  <view class="section">
+    <text class="section-label">风格</text>
+    <scroll-view class="style-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="style-chip {{item.isActive ? 'active' : ''}}"
+            wx:for="{{styleItems}}" wx:key="key"
+            bindtap="onStyleTap" data-key="{{item.key}}"
+            style="{{item.activeStyle}}">
+        <text class="sc-label" style="{{item.labelStyle}}">{{item.label}}</text>
+        <text class="sc-desc" style="{{item.descStyle}}">{{item.desc}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 开始创作 -->
+  <view class="generate-btn" bindtap="onGenerate"
+        style="background: {{theme.accent}}; box-shadow: 0 6rpx 24rpx {{theme.shadow}}">
+    <text class="gb-text">开始创作</text>
+  </view>
+
+  <!-- 最近使用 -->
+  <view class="section" wx:if="{{history.length > 0}}">
+    <view class="history-header">
+      <text class="section-label">最近使用</text>
+      <text class="history-clear" bindtap="onClearHistory">清空</text>
+    </view>
+    <view class="history-row" wx:for="{{history}}" wx:key="time"
+          bindtap="onHistoryTap" data-item="{{item}}">
+      <text class="hr-prompt">{{item.prompt}}</text>
+      <text class="hr-time">{{item.timeAgo}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

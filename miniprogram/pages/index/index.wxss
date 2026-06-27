@@ -156,13 +156,51 @@
   transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .platform-item.active {
-  border-color: #E8E8ED;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  border-width: 2rpx;
   transform: translateY(-2rpx);
 }
 .platform-item:active {
   transform: scale(0.96);
 }
+
+/* === 字数选择 === */
+.wordcount-section {
+  margin-top: 28rpx;
+}
+.wordcount-row {
+  display: flex;
+  gap: 14rpx;
+}
+.wc-chip {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+  border-radius: 20rpx;
+  background: #FFFFFF;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  border: 1.5rpx solid transparent;
+  transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #B0B0B8;
+}
+.wc-chip.active {
+  border-color: #FF6B8A;
+  background: #FFF5F7;
+  color: #FF6B8A;
+  box-shadow: 0 4rpx 18rpx rgba(255,107,138,0.15);
+  transform: translateY(-2rpx);
+}
+.wc-chip:active { transform: scale(0.95); }
+.wc-hint {
+  font-size: 20rpx;
+  font-weight: 400;
+  color: #C7C7CC;
+  margin-top: 4rpx;
+}
+.wc-chip.active .wc-hint { color: #FF6B8A; }
 
 .platform-dot {
   width: 24rpx; height: 24rpx;

@@ -1,0 +1,57 @@
+<view class="page">
+
+  <!-- 生成中 -->
+  <view class="loading-center" wx:if="{{loading}}">
+    <loading-dot show="{{true}}"></loading-dot>
+    <text class="loading-text">{{actionLoading ? '优化中...' : '正在创作...'}}</text>
+  </view>
+
+  <!-- 错误 -->
+  <view class="error-msg" wx:if="{{error}}">
+    <text>{{error}}</text>
+    <view class="error-retry" bindtap="onBack">返回</view>
+  </view>
+
+  <!-- 结果卡片 -->
+  <block wx:if="{{!loading && !error && cards.length > 0}}">
+    <view class="result-header">
+      <text class="rh-title">创作结果</text>
+      <text class="rh-sub">{{config.prompt}}</text>
+    </view>
+
+    <result-card
+      wx:for="{{cards}}" wx:key="_k"
+      card="{{item}}" index="{{index}}"
+      bind:action="onCardAction"
+    ></result-card>
+
+    <!-- 继续创作 -->
+    <view class="continue-section">
+      <text class="section-label">继续创作</text>
+      <view class="continue-row">
+        <view class="continue-chip" bindtap="onContinue" data-action="change-platform">
+          转换平台
+        </view>
+        <view class="continue-chip" bindtap="onContinue" data-action="to-video">
+          转视频脚本
+        </view>
+        <view class="continue-chip" bindtap="onContinue" data-action="to-moments">
+          转朋友圈
+        </view>
+        <view class="continue-chip" bindtap="onContinue" data-action="more">
+          更多版本
+        </view>
+      </view>
+    </view>
+
+    <view class="back-btn" bindtap="onBack">返回创作</view>
+  </block>
+
+  <!-- 空结果 -->
+  <view class="loading-center" wx:if="{{!loading && !error && cards.length === 0}}">
+    <text class="loading-text">暂无结果</text>
+    <view class="back-btn" bindtap="onBack">返回创作</view>
+  </view>
+
+  <view class="bottom-safe"></view>
+</view>

@@ -1,3 +1,6 @@
 {
+  "usingComponents": {
+    "setting-row": "/components/setting-row/setting-row"
+  },
   "navigationBarTitleText": "我的"
 }

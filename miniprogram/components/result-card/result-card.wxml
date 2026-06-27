@@ -1,0 +1,40 @@
+<view class="rc-card" style="animation-delay: {{index * 0.08}}s">
+  <!-- 标题 -->
+  <view class="rc-title-row" bindtap="onCopyField" data-text="{{card.title}}">
+    <text class="rc-title">{{card.title}}</text>
+    <text class="rc-copy">复制</text>
+  </view>
+  <!-- 正文 -->
+  <view class="rc-body" bindtap="onCopyField" data-text="{{card.content}}">
+    <text class="rc-content">{{card.content}}</text>
+    <view class="rc-body-footer">
+      <text class="rc-hint">轻触复制正文</text>
+    </view>
+  </view>
+  <!-- 标签 -->
+  <view class="rc-tags" wx:if="{{card.hashtags && card.hashtags.length}}">
+    <text class="rc-tag" wx:for="{{card.hashtags}}" wx:key="*this" wx:for-item="tag"
+          bindtap="onCopyField" data-text="{{'#' + tag}}">#{{tag}}</text>
+  </view>
+  <!-- 配图提示词 -->
+  <view class="rc-extra" wx:if="{{card.image_prompt}}">
+    <text class="rc-extra-label">配图提示词</text>
+    <text class="rc-extra-text">{{card.image_prompt}}</text>
+  </view>
+  <!-- 评论文案 -->
+  <view class="rc-extra" wx:if="{{card.comment_copy}}">
+    <text class="rc-extra-label">评论文案</text>
+    <text class="rc-extra-text">{{card.comment_copy}}</text>
+  </view>
+  <!-- 操作栏 -->
+  <view class="rc-actions">
+    <view class="rc-act primary" bindtap="onCopyAll">一键复制</view>
+    <view class="rc-act" bindtap="onAction" data-action="polish">润色</view>
+    <view class="rc-act" bindtap="onAction" data-action="expand">扩写</view>
+    <view class="rc-act" bindtap="onAction" data-action="shorten">缩写</view>
+  </view>
+  <view class="rc-actions secondary">
+    <view class="rc-act s" bindtap="onAction" data-action="deai">去 AI 味</view>
+    <view class="rc-act s" bindtap="onAction" data-action="regenerate">重新生成</view>
+  </view>
+</view>

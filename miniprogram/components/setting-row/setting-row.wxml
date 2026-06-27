@@ -1,0 +1,6 @@
+<view class="sr-row {{last ? 'last' : ''}}">
+  <view class="sr-icon" wx:if="{{icon}}" style="background:{{icon}}"></view>
+  <text class="sr-title">{{title}}</text>
+  <text class="sr-desc" wx:if="{{desc}}">{{desc}}</text>
+  <text class="sr-arrow" wx:if="{{arrow}}">›</text>
+</view>

@@ -32,12 +32,26 @@
     <scroll-view class="platform-scroll" scroll-x enhanced show-scrollbar="{{false}}">
       <view class="platform-item {{activePlatforms.indexOf(item.key) > -1 ? 'active' : ''}}"
             wx:for="{{platforms}}" wx:key="key"
-            bindtap="onPlatformTap" data-key="{{item.key}}">
+            bindtap="onPlatformTap" data-key="{{item.key}}"
+            style="{{activePlatforms.indexOf(item.key) > -1 ? 'border-color:' + item.color + '; box-shadow: 0 6rpx 24rpx ' + item.color + '22;' : ''}}">
         <view class="platform-dot" style="background:{{item.gradient}}"></view>
         <text class="platform-icon">{{item.icon}}</text>
         <text class="platform-name">{{item.name}}</text>
       </view>
     </scroll-view>
+  </view>
+
+  <!-- 字数选择 -->
+  <view class="wordcount-section">
+    <text class="section-label">内容长度</text>
+    <view class="wordcount-row">
+      <view class="wc-chip {{activeWordCount === item.key ? 'active' : ''}}"
+            wx:for="{{wordCountOptions}}" wx:key="key"
+            bindtap="onWordCountTap" data-key="{{item.key}}">
+        <text>{{item.label}}</text>
+        <text class="wc-hint">{{item.hint}}</text>
+      </view>
+    </view>
   </view>
 
   <!-- 场景快捷标签 -->

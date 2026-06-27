@@ -1,0 +1,5 @@
+<view class="logo" style="width:{{size}}rpx; height:{{size}}rpx">
+  <view class="logo-top"></view>
+  <view class="logo-filling"></view>
+  <view class="logo-bottom"></view>
+</view>

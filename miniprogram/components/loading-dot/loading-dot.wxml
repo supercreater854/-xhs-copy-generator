@@ -1,0 +1,4 @@
+<view class="dot-wrapper" wx:if="{{show}}">
+  <view class="dot-ring"></view>
+  <view class="dot-core"></view>
+</view>

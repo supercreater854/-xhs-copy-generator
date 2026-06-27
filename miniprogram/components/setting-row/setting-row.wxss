@@ -1,0 +1,35 @@
+.sr-row {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 0;
+  margin: 0 32rpx;
+  border-bottom: 0.5rpx solid #F0F0F5;
+  transition: background 0.15s;
+}
+.sr-row:active { background: #F9F9FB; margin: 0; padding: 28rpx 32rpx; border-radius: 12rpx; }
+.sr-row.last { border-bottom: none; }
+.sr-icon {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+.sr-title {
+  flex: 1;
+  font-size: 30rpx;
+  color: #1D1D1F;
+  font-weight: 450;
+}
+.sr-desc {
+  font-size: 26rpx;
+  color: #C7C7CC;
+  margin-right: 8rpx;
+}
+.sr-arrow {
+  font-size: 36rpx;
+  color: #C7C7CC;
+  font-weight: 200;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+}

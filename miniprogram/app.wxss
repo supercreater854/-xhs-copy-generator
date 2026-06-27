@@ -1,15 +1,90 @@
-/* === 超级马卡龙 · 全局设计系统 === */
+/* === 超级马卡龙 v2 — 全局设计系统 === */
 
-/* 基础 */
+/* 基础重置 */
 page {
-  background: #FFFAF5;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
-  -webkit-font-smoothing: antialiased;
+  background: #FBFBFD;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
   color: #1D1D1F;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 骨架屏微光动画 */
+/* 主色：马卡龙粉，仅作点缀 */
+/* 辅色：紫 #C4A6FF / 蓝 #7DC4FF / 绿 #8ED4A0 */
+/* 文字层级：#1D1D1F (主) / #86868B (辅) / #C7C7CC (占位) */
+/* 圆角：24rpx / 阴影：0 2rpx 16rpx rgba(0,0,0,0.04) */
+/* 动画：0.25s cubic-bezier(0.25, 0.1, 0.25, 1) */
+
+/* 页面容器 */
+.page {
+  padding: 0 32rpx;
+  min-height: 100vh;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* 毛玻璃卡片基类 */
+.glass-card {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.04);
+}
+
+/* 纯白卡片 */
+.white-card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0,0,0,0.04);
+}
+
+/* 章节标签 */
+.section-label {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #86868B;
+  letter-spacing: 2rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+/* 通用缓动 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(24rpx); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 骨架屏微光 */
 @keyframes shimmer {
   0%   { background-position: -400rpx 0; }
   100% { background-position: 400rpx 0; }
 }
+
+.sk-line {
+  height: 16rpx;
+  border-radius: 8rpx;
+  margin-bottom: 28rpx;
+  background: linear-gradient(90deg, #F0F0F5 25%, #F8F8FA 50%, #F0F0F5 75%);
+  background-size: 800rpx 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+.sk-long  { width: 45%; }
+.sk-mid   { width: 70%; }
+.sk-short { width: 55%; }
+.sk-block {
+  height: 140rpx;
+  border-radius: 16rpx;
+  margin-top: 36rpx;
+  background: linear-gradient(90deg, #F0F0F5 25%, #F8F8FA 50%, #F0F0F5 75%);
+  background-size: 800rpx 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* 底部安全区 */
+.bottom-safe { height: 120rpx; }

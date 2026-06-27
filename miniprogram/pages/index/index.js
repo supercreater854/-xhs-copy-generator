@@ -7,12 +7,22 @@ const PLATFORMS = [
   { key: 'douyin', name: '抖音', icon: '🎵', color: '#1D1D1F', gradient: 'linear-gradient(135deg, #1D1D1F, #3A3A3C)' }
 ];
 
-const PLATFORM_PROMPTS = {
-  xiaohongshu: '生成小红书风格的文案：语气亲切如姐妹分享，多用emoji和网络热词，80-150字。',
-  pengyouquan: '生成朋友圈风格的文案：真实自然如日常分享，简洁有力，30-80字。',
-  weibo: '生成微博风格的文案：精炼有梗，可带话题标签，50-100字。',
-  douyin: '生成抖音风格的文案：开头有强力钩子，节奏快抓眼球，30-60字。'
+const PLATFORM_BASE = {
+  xiaohongshu: '生成小红书风格的文案：语气亲切如姐妹分享，多用emoji和网络热词，',
+  pengyouquan: '生成朋友圈风格的文案：真实自然如日常分享，简洁有力，',
+  weibo: '生成微博风格的文案：精炼有梗，可带话题标签，',
+  douyin: '生成抖音风格的文案：开头有强力钩子，节奏快抓眼球，'
 };
+
+const WORD_RANGES = {
+  short:  { xiaohongshu: '30-60字',  pengyouquan: '15-30字',  weibo: '20-50字',  douyin: '15-30字' },
+  medium: { xiaohongshu: '80-150字', pengyouquan: '30-80字',  weibo: '50-100字', douyin: '30-60字' },
+  long:   { xiaohongshu: '150-300字',pengyouquan: '80-150字', weibo: '100-200字',douyin: '60-120字' }
+};
+
+function getPlatformPrompt(key, wordCount) {
+  return PLATFORM_BASE[key] + WORD_RANGES[wordCount][key] + '。';
+}
 
 const PLATFORM_NAMES = {
   xiaohongshu: '小红书', pengyouquan: '朋友圈', weibo: '微博', douyin: '抖音'
@@ -70,6 +80,12 @@ Page({
     error: '',
     platforms: PLATFORMS,
     activePlatforms: ['xiaohongshu'],
+    activeWordCount: 'medium',
+    wordCountOptions: [
+      { key: 'short', label: '短篇', hint: '精简' },
+      { key: 'medium', label: '中篇', hint: '标准' },
+      { key: 'long', label: '长篇', hint: '详实' }
+    ],
     hotTags: ['口红', '防晒霜', '粉底液', '精华', '面霜', '眼影盘', '腮红'],
     sceneTags: ['干皮夏日底妆', '通勤穿搭推荐', '平价好物分享', '学生党护肤', '周末探店打卡', '换季敏感肌'],
     activeTag: '',
@@ -155,6 +171,11 @@ Page({
     this.setData({ activePlatforms: active });
   },
 
+  onWordCountTap(e) {
+    wx.vibrateShort({ type: 'light' });
+    this.setData({ activeWordCount: e.currentTarget.dataset.key });
+  },
+
   onExampleTap(e) {
     wx.vibrateShort({ type: 'light' });
     const idx = e.currentTarget.dataset.index;
@@ -185,7 +206,7 @@ Page({
 
   _doGenerate(basePrompt) {
     const platformInstructions = this.data.activePlatforms
-      .map(k => PLATFORM_PROMPTS[k])
+      .map(k => getPlatformPrompt(k, this.data.activeWordCount))
       .join(' ');
     const fullPrompt = `${platformInstructions} 主题：${basePrompt}。`;
 

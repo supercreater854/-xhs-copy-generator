@@ -1,87 +1,121 @@
 <view class="page">
-  <!-- 背景 -->
-  <view class="decor-circle decor-1"></view>
 
-  <!-- 顶部 -->
-  <view class="hero">
-    <text class="hero-title">我的</text>
-  </view>
+  <!-- ========== 主视图 ========== -->
+  <block wx:if="{{view === 'main'}}">
 
-  <!-- 统计卡片 -->
-  <view class="stats-card">
-    <view class="stat-item">
-      <text class="stat-num">{{totalGenerations}}</text>
-      <text class="stat-label">生成次数</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-num">{{platformCount}}</text>
-      <text class="stat-label">覆盖平台</text>
-    </view>
-    <view class="stat-divider"></view>
-    <view class="stat-item">
-      <text class="stat-num">{{history.length}}</text>
-      <text class="stat-label">历史记录</text>
-    </view>
-  </view>
-
-  <!-- 历史 -->
-  <view class="history-section" wx:if="{{history.length > 0}}">
-    <view class="history-header">
-      <text class="section-title">最近记录</text>
-      <text class="history-clear" bindtap="onClearHistory">清空</text>
-    </view>
-    <view class="history-row" wx:for="{{history}}" wx:key="time"
-          bindtap="onHistoryTap" data-item="{{item}}">
-      <view class="h-left">
-        <view class="h-plats">
-          <view class="h-plat-dot" wx:for="{{item.platDots}}" wx:key="color"
-                wx:for-item="dot" style="background:{{dot.color}}"></view>
+    <!-- 头像区 -->
+    <view class="avatar-section">
+      <view class="avatar">
+        <view class="avatar-ring">
+          <view class="avatar-inner"></view>
         </view>
-        <text class="h-text">{{item.prompt}}</text>
       </view>
-      <text class="h-time">{{item.timeAgo}}</text>
+      <text class="avatar-name">超级马卡龙</text>
+      <text class="avatar-slogan">让灵感，更容易变成作品</text>
     </view>
-  </view>
 
-  <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{history.length === 0}}">
-    <text class="empty-text">还没有生成过文案</text>
-    <text class="empty-sub">去创作页试试吧</text>
-  </view>
-
-  <!-- 收藏 -->
-  <view class="history-section" wx:if="{{collections.length > 0}}">
-    <view class="history-header">
-      <text class="section-title">我的收藏</text>
-      <text class="history-clear" bindtap="onClearCollections">清空</text>
-    </view>
-    <view class="coll-row" wx:for="{{collections}}" wx:key="title"
-          bindtap="onCollectionTap" data-item="{{item}}">
-      <view class="coll-style">{{item.style}}</view>
-      <view class="coll-main">
-        <text class="coll-title">{{item.title}}</text>
-        <text class="coll-preview">{{item.content}}</text>
+    <!-- 统计卡片 -->
+    <view class="stats-card white-card">
+      <view class="stat">
+        <text class="stat-num">{{totalGenerations}}</text>
+        <text class="stat-label">生成次数</text>
+      </view>
+      <view class="stat-divider"></view>
+      <view class="stat">
+        <text class="stat-num">{{totalCollections}}</text>
+        <text class="stat-label">收藏</text>
       </view>
     </view>
-  </view>
 
-  <!-- 关于 -->
-  <view class="about-section">
-    <text class="section-title">关于</text>
-    <view class="about-row">
-      <text class="about-label">名称</text>
-      <text class="about-value">超级马卡龙</text>
+    <!-- 设置列表 第1组 -->
+    <view class="setting-group white-card">
+      <setting-row icon="#FF6B8A" title="收藏" desc="{{totalCollections}} 项"
+                   bindtap="onTapRow" data-key="collections"></setting-row>
+      <setting-row icon="#8ED4A0" title="历史记录" desc="{{totalGenerations}} 条"
+                   bindtap="onTapRow" data-key="history" last="{{true}}"></setting-row>
     </view>
-    <view class="about-row">
-      <text class="about-label">功能</text>
-      <text class="about-value">多平台文案生成</text>
-    </view>
-    <view class="about-row">
-      <text class="about-label">支持</text>
-      <text class="about-value">小红书 · 朋友圈 · 微博 · 抖音</text>
-    </view>
-  </view>
 
-  <view class="bottom-space"></view>
+    <!-- 设置列表 第2组 -->
+    <view class="setting-group white-card">
+      <setting-row icon="#FF6B8A" title="和我们聊聊" desc="微信客服"
+                   bindtap="onTapRow" data-key="contact"></setting-row>
+      <setting-row icon="#C4A6FF" title="设置"
+                   bindtap="onTapRow" data-key="settings"></setting-row>
+      <setting-row icon="#7DC4FF" title="关于"
+                   bindtap="onTapRow" data-key="about" last="{{true}}"></setting-row>
+    </view>
+
+    <!-- 收藏预览 -->
+    <view class="section" wx:if="{{collections.length > 0}}">
+      <text class="section-label">最近收藏</text>
+      <view class="collection-item white-card" wx:for="{{collections}}" wx:key="savedAt"
+            bindtap="onTapRow" data-key="collections">
+        <text class="ci-title">{{item.title}}</text>
+        <text class="ci-preview">{{item.content}}</text>
+      </view>
+    </view>
+
+  </block>
+
+  <!-- ========== 收藏列表 ========== -->
+  <block wx:if="{{view === 'collections'}}">
+    <view class="sub-header">
+      <view class="sub-back" bindtap="onBackToMain">
+        <text class="sub-back-arrow">‹</text>
+        <text class="sub-back-text">返回</text>
+      </view>
+      <text class="sub-title">收藏 ({{collections.length}})</text>
+      <view style="width:100rpx"></view>
+    </view>
+
+    <view wx:if="{{collections.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无收藏</text>
+    </view>
+
+    <view class="sub-list">
+      <view class="sub-item white-card" wx:for="{{collections}}" wx:key="savedAt">
+        <text class="si-title">{{item.title}}</text>
+        <text class="si-body">{{item.content}}</text>
+        <view class="si-tags" wx:if="{{item.hashtags && item.hashtags.length}}">
+          <text class="si-tag" wx:for="{{item.hashtags}}" wx:key="*this" wx:for-item="tag">#{{tag}}</text>
+        </view>
+        <view class="si-actions">
+          <text class="si-time">{{item.timeAgo}}</text>
+          <view class="si-btns">
+            <text class="si-btn" bindtap="onCopyItem" data-item="{{item}}">复制</text>
+            <text class="si-btn si-btn-del" bindtap="onDeleteCollection" data-item="{{item}}">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ========== 历史记录 ========== -->
+  <block wx:if="{{view === 'history'}}">
+    <view class="sub-header">
+      <view class="sub-back" bindtap="onBackToMain">
+        <text class="sub-back-arrow">‹</text>
+        <text class="sub-back-text">返回</text>
+      </view>
+      <text class="sub-title">历史记录 ({{history.length}})</text>
+      <view style="width:100rpx"></view>
+    </view>
+
+    <view wx:if="{{history.length === 0}}" class="empty-state">
+      <text class="empty-text">暂无历史</text>
+    </view>
+
+    <view class="sub-list">
+      <view class="sub-item white-card" wx:for="{{history}}" wx:key="time"
+            bindtap="onCopyItem" data-item="{{item}}">
+        <text class="si-prompt">{{item.prompt}}</text>
+        <view class="si-actions">
+          <text class="si-time">{{item.timeAgo}}</text>
+          <text class="si-tag-s" wx:if="{{item.length}}">{{item.length}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="bottom-safe"></view>
 </view>

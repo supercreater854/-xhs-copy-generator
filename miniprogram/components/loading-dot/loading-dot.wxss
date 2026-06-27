@@ -1,0 +1,31 @@
+.dot-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 120rpx;
+  position: relative;
+}
+.dot-ring {
+  position: absolute;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 3rpx solid rgba(255,107,138,0.15);
+  animation: dotPulse 1.8s ease-in-out infinite;
+}
+.dot-core {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background: #FF6B8A;
+  animation: dotBreath 1.8s ease-in-out infinite;
+}
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.25); opacity: 0.5; }
+}
+@keyframes dotBreath {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.4); }
+}

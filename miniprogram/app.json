@@ -1,22 +1,25 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/inspiration/inspiration",
+    "pages/create/create",
+    "pages/result/result",
     "pages/profile/profile"
   ],
   "window": {
-    "navigationBarBackgroundColor": "#FFFFFF",
-    "navigationBarTextStyle": "black"
+    "navigationBarBackgroundColor": "#FBFBFD",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "超级马卡龙",
+    "backgroundColor": "#FBFBFD"
   },
   "tabBar": {
     "color": "#86868B",
-    "selectedColor": "#1D1D1F",
-    "backgroundColor": "#FFF5F2",
+    "selectedColor": "#FF6B8A",
+    "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
-      { "pagePath": "pages/index/index", "text": "创作" },
-      { "pagePath": "pages/inspiration/inspiration", "text": "灵感" },
+      { "pagePath": "pages/create/create", "text": "创作" },
       { "pagePath": "pages/profile/profile", "text": "我的" }
     ]
-  }
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
 }

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "logo-mark": "/components/logo-mark/logo-mark"
+  },
+  "navigationBarTitleText": "创作"
+}
