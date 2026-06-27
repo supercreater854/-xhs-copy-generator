@@ -425,23 +425,6 @@
   transform: scale(0.97);
 }
 
-.action-publish {
-  text-align: center;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #FFFFFF;
-  background: linear-gradient(135deg, #1D1D1F, #3A3A3C);
-  padding: 20rpx 0;
-  border-radius: 20rpx;
-  margin-top: 16rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.1);
-  transition: all 0.15s ease;
-}
-.action-publish:active {
-  background: linear-gradient(135deg, #000000, #2A2A2C);
-  transform: scale(0.97);
-}
-
 /* === 历史记录 === */
 .history-area {
   margin-top: 44rpx;

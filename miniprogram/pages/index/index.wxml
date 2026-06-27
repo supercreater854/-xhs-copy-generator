@@ -135,9 +135,6 @@
       </view>
       <view class="action-secondary" bindtap="onRegenerate">重新生成</view>
     </view>
-    <view class="action-publish" bindtap="onPublish">
-      <text>发布到灵感墙 ✨</text>
-    </view>
   </view>
 
   <!-- 历史 -->
